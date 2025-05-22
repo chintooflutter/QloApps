@@ -1,16 +1,36 @@
-FROM php:8.2-apache
+version: '3.8'
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libonig-dev libxml2-dev unzip zip mariadb-client \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"          # Map container port 80 to host 8080
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: mealvilla
+      DB_USER: mealvilla_user
+      DB_PASSWORD: mealvilla_password
+      APP_ENV: production
+      APP_DEBUG: "false"
+    depends_on:
+      - db
+    volumes:
+      - ./:/var/www/html   # Sync current directory with container
+    restart: unless-stopped
 
-RUN a2enmod rewrite
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mealvilla
+      MYSQL_USER: mealvilla_user
+      MYSQL_PASSWORD: mealvilla_password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"       # Optional: expose MySQL for local use
+    restart: unless-stopped
 
-WORKDIR /var/www/html
-
-COPY . /var/www/html
-
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-EXPOSE 80
+volumes:
+  db_data:
