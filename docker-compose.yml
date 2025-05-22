@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:80"          # Map container port 80 to host 8080
+      - "8080:80"  # Expose app on http://localhost:8080
     environment:
       DB_HOST: db
       DB_PORT: 3306
@@ -15,8 +15,17 @@ services:
       APP_DEBUG: "false"
     depends_on:
       - db
+    command: >
+      bash -c "
+        echo 'Waiting for MySQL to be ready...';
+        until mysqladmin ping -h db -u mealvilla_user -pmealvilla_password --silent; do
+          sleep 2;
+        done;
+        echo 'MySQL is ready. Starting Apache...';
+        apache2-foreground
+      "
     volumes:
-      - ./:/var/www/html   # Sync current directory with container
+      - ./:/var/www/html  # Sync local project to container
     restart: unless-stopped
 
   db:
@@ -29,7 +38,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3307:3306"       # Optional: expose MySQL for local use
+      - "3307:3306"  # MySQL accessible on localhost:3307
     restart: unless-stopped
 
 volumes:
