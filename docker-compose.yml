@@ -4,33 +4,15 @@ services:
   app:
     build: .
     ports:
-      - "8080:80"           # Access app on localhost:8080
+      - "8080:80"
     environment:
-      DB_HOST: gondola.proxy.rlwy.net:25125           # points to the MySQL container 'db'
-      DB_PORT: 3306
-      DB_NAME: railway
-      DB_USER: root
-      DB_PASSWORD: dkXrjPdzupemWVsfPvQNZLpUifGVqzSU
+      DB_HOST: mysql-apps9-bfftalk143-b56e.l.aivencloud.com
+      DB_PORT: 23818      
+      DB_NAME: defaultdb
+      DB_USER: avnadmin
+      DB_PASSWORD: AVNS_4kcxRH1N3YgnDxv3aDo
       APP_ENV: production
       APP_DEBUG: "false"
-    depends_on:
-      - db
     volumes:
-      - ./:/var/www/html    # Sync local folder to container
+      - ./:/var/www/html
     restart: unless-stopped
-
-  db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: dkXrjPdzupemWVsfPvQNZLpUifGVqzSU
-      MYSQL_DATABASE: railway
-      MYSQL_USER: root
-      MYSQL_PASSWORD: dkXrjPdzupemWVsfPvQNZLpUifGVqzSU
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3307:3306"         # optional: map MySQL port for local access
-    restart: unless-stopped
-
-volumes:
-  db_data:
