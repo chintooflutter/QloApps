@@ -4,42 +4,13 @@ services:
   app:
     build: .
     ports:
-      - "8080:80"  # Expose app on http://localhost:8080
+      - "8080:80"
     environment:
-      DB_HOST: db
+      DB_HOST: mysql.railway.internal
       DB_PORT: 3306
-      DB_NAME: mealvilla
-      DB_USER: mealvilla_user
-      DB_PASSWORD: mealvilla_password
-      APP_ENV: production
-      APP_DEBUG: "false"
-    depends_on:
-      - db
-    command: >
-      bash -c "
-        echo 'Waiting for MySQL to be ready...';
-        until mysqladmin ping -h db -u mealvilla_user -pmealvilla_password --silent; do
-          sleep 2;
-        done;
-        echo 'MySQL is ready. Starting Apache...';
-        apache2-foreground
-      "
+      DB_NAME: railway
+      DB_USER: root
+      DB_PASSWORD: dkXrjPdzupemWVsfPvQNZLpUifGVqzSU
     volumes:
-      - ./:/var/www/html  # Sync local project to container
+      - ./:/var/www/html
     restart: unless-stopped
-
-  db:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mealvilla
-      MYSQL_USER: mealvilla_user
-      MYSQL_PASSWORD: mealvilla_password
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3307:3306"  # MySQL accessible on localhost:3307
-    restart: unless-stopped
-
-volumes:
-  db_data:
