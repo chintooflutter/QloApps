@@ -5,14 +5,31 @@ services:
     build: .
     ports:
       - "8080:80"
+    depends_on:
+      - db
     environment:
-      DB_HOST: mysql-apps9-bfftalk143-b56e.l.aivencloud.com
-      DB_PORT: 23818      
-      DB_NAME: defaultdb
-      DB_USER: avnadmin
-      DB_PASSWORD: AVNS_4kcxRH1N3YgnDxv3aDo
-      APP_ENV: production
-      APP_DEBUG: "false"
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: qloapps
+      DB_USER: qloapps_user
+      DB_PASSWORD: qloapps_password
     volumes:
-      - ./:/var/www/html
+      - .:/var/www/html
     restart: unless-stopped
+
+  db:
+    image: mysql:5.7
+    container_name: mysql57
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: qloapps
+      MYSQL_USER: qloapps_user
+      MYSQL_PASSWORD: qloapps_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
