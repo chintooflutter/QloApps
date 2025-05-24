@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
     environment:
-      DB_HOST: db
+      DB_HOST: db:3306
       DB_PORT: 3306
       DB_NAME: qloapps
       DB_USER: qloapps_user
