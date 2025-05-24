@@ -13,4 +13,5 @@ services:
       DB_PASSWORD: dkXrjPdzupemWVsfPvQNZLpUifGVqzSU
     volumes:
       - ./:/var/www/html
+      - ./my.cnf:/etc/mysql/my.cnf
     restart: unless-stopped
